@@ -6,16 +6,21 @@ pub mod graph {
         pub mod node {
             #[derive(PartialEq)]
             #[derive(Debug)]
-            pub struct Node;
+            #[derive(Clone)]
+            pub struct Node {
+                pub name: String
+            }
         }
         pub mod edge {
             #[derive(PartialEq)]
             #[derive(Debug)]
+            #[derive(Clone)]
             pub struct Edge;
         }
     }
 
     #[derive(Debug)]
+    #[derive(Clone)]
     pub struct Graph {
         pub edges: Vec<graph_items::edge::Edge>,
         pub nodes: Vec<graph_items::node::Node>,
@@ -32,8 +37,10 @@ pub mod graph {
             // unimplemented!("Construct a new Graph struct.");
         }
 
-        pub fn with_nodes(&self, _nodes: &Vec<graph_items::node::Node>) -> Self {
-            unimplemented!("x")
+        pub fn with_nodes(&self, nodes: &Vec<graph_items::node::Node>) -> Self {
+            let mut changed = self.clone();
+            changed.nodes = nodes.to_vec();
+            return changed;
         }
 
         pub fn with_edges(&self, _edges: &Vec<graph_items::edge::Edge>) -> Self {
@@ -44,8 +51,11 @@ pub mod graph {
             unimplemented!("s")
         }
 
-        pub fn get_node(&self, _name: &str) -> Result<graph_items::node::Node, &str> {
-            unimplemented!("")
+        pub fn get_node(&self, name: &str) -> Option<graph_items::node::Node> {
+            match self.nodes.iter().find(|s| s.name == name) {
+                Some(found) => Some(found.clone()),
+                _ => None
+            }
         }
     }
 
@@ -60,8 +70,10 @@ pub mod graph {
     }
 
     impl graph_items::node::Node {
-        pub fn new(_name: &str) -> Self {
-            unimplemented!("node");
+        pub fn new(name: &str) -> Self {
+            graph_items::node::Node {
+                name: name.to_string()
+            }
         }
 
         pub fn with_attrs(&self, _attrs: &[(&str, &str)]) -> Self {
